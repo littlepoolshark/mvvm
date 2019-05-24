@@ -41,12 +41,21 @@ Watcher.prototype = {
         // 触发了addDep(), 在整个forEach过程，当前wacher都会加入到每个父级过程属性的dep
         // 例如：当前watcher的是'child.child.name', 那么child, child.child, child.child.name这三个属性的dep都会加入当前watcher
         if (!this.depIds.hasOwnProperty(dep.id)) {
-            dep.addSub(this);
+            // 这句代码实际就是调用this.subs.push(watcher)这行语句。
+            // 因为this.subs是数组，所以，我们不禁问：“为什么this.subs要设计为数组呢？”。
+            // 又因为数组里面装的是watcher实例，言下之意，我们是在自问：“dep实例为什么会对应多个watcher实例呢？”。
+            // 答曰：“那是因为存在一种情况，一个dep实例会对应多个watcher实例”。
+            // 当模板中多个表达式里面访问了同一个属性的情况下，一个dep实例就会有多个watcher实例。
+            // 为什么会这么说呢？
+            // 那是因为就像我们在observer.js注释里面所说的那样，一个属性对应一个dep实例。同样，一个表达式也对应着一个watcher实例。
+            // 那么，多个表达式就对应着多个watcher实例，也就是说多个watcher对应着同一个属性，而一个属性就对应着一个dep实例。
+            // 综上所述，也就是说一个dep实例是有可能对应着多个watcher实例的。
+            dep.addSub(this); 
             this.depIds[dep.id] = dep;
         }
     },
     get: function() {
-        Dep.target = this;
+        Dep.target = this; // 在这里watcher实例把自己的大门打开，欢迎dep实例与自己建立关系。
         var value = this.getter.call(this.vm, this.vm);
         Dep.target = null;
         return value;
