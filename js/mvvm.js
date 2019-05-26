@@ -5,6 +5,13 @@ function MVVM(options) {
 
     // 数据代理
     // 实现 vm.xxx -> vm._data.xxx
+    // 数据代理并不是mvvm的必要和核心特征，它只是一个便利之举而已。也就是说，有了它，我们不用写vm._data.xxx而是少些几个字符－ vm.xxx。
+    // mvvm的核心特征是数据绑定（通过数据劫持或者数据观察）来实现页面的自动更新。
+    // 不信？我们不妨试一试禁用数据代理情况下，数据绑定是否生效？
+    // 1) 把mvvm.js的构造函数MVVM的数据代理代码注释掉
+    // 2) 在自定义类型watcherde的get方法里面对this.getter的调用传参时，把第二个参数从“this.vm”替换为"this.vm._data"
+    // 3) 在自定义类型compile的bind方法里面对this._getVMVal的调用传参时，把第一个参数从“vm”替换为“vm._data”
+    // 保存更新后，刷新页面，我们发现，数据绑定功能并没有受到影响。
     Object.keys(data).forEach(function(key) {
         me._proxyData(key);
     });
