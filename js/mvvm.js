@@ -3,10 +3,10 @@ function MVVM(options) {
     var data = this._data = this.$options.data;
     var me = this;
 
-    // 数据代理
+    // 第一步：数据代理
     // 实现 vm.xxx -> vm._data.xxx
     // 数据代理并不是mvvm的必要和核心特征，它只是一个便利之举而已。也就是说，有了它，我们不用写vm._data.xxx而是少些几个字符－ vm.xxx。
-    // mvvm的核心特征是数据绑定（通过数据劫持或者数据观察）来实现页面的自动更新。
+    // mvvm的核心特征是数据绑定（通过数据劫持或者属性监听）来实现页面的自动更新。
     // 不信？我们不妨试一试禁用数据代理情况下，数据绑定是否生效？
     // 1) 把mvvm.js的构造函数MVVM的数据代理代码注释掉
     // 2) 在自定义类型watcherde的get方法里面对this.getter的调用传参时，把第二个参数从“this.vm”替换为"this.vm._data"
@@ -17,9 +17,13 @@ function MVVM(options) {
     });
 
     this._initComputed();
-
+   
+    // 第二步：对data所有层次的属性进行监听，并生成该属性的对应的dep实例，利用闭包来将这种关系持久化在内存当中，等待后续与watcher建立双向关联。
     observe(data, this);
-
+    
+    // 第三步：编译模板。其中又可以分为两步：
+    // 1) 完成界面的初始显示
+    // 2) 为表达式创建对应的watcher实例，并完成与［该表达式所依赖的属性］的dep实例的双向关联。
     this.$compile = new Compile(options.el || document.body, this)
 }
 
