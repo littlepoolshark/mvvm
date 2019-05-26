@@ -52,11 +52,15 @@ Watcher.prototype = {
             // 综上所述，也就是说一个dep实例是有可能对应着多个watcher实例的。
             dep.addSub(this); 
             this.depIds[dep.id] = dep;
+            console.log('首次，成功建立外交关系')
+        }else {
+            console.log('已经建立外交关系，不需重复建立')
         }
     },
     get: function() {
         Dep.target = this; // 在这里watcher实例把自己的大门打开，欢迎dep实例与自己建立关系。
-        var value = this.getter.call(this.vm, this.vm);
+        var value = this.getter.call(this.vm, this.vm._data);
+        // var value = this.getter.call(this.vm, this.vm);
         Dep.target = null;
         return value;
     },

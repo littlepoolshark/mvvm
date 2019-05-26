@@ -39,12 +39,14 @@ MVVM.prototype = {
             configurable: false,
             enumerable: true,
             get: function proxyGetter() {
+                console.log(`into _proxyData -> ${key}的getter`)
                 return me._data[key];
             },
             set: function proxySetter(newVal) {
                 me._data[key] = newVal;
             }
         });
+        // console.log('setter:',setter)
     },
 
     _initComputed: function() {

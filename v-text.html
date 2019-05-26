@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="root">
+        {{person.son.name}}
+        <button v-on:click="changeName">测试</button>
+    </div>
+    <script src="./js/observer.js"></script>
+    <script src="./js/watcher.js"></script>
+    <script src="./js/compile.js"></script>
+    <script src="./js/mvvm.js"></script>
+    <script>
+        var visitCount = 0;
+        window.onload = function(){
+            const vm = new MVVM({
+                el: '#root',
+                data:{
+                    person:{
+                        name:'sam',
+                        age:28,
+                        son:{
+                            name:'little sam,haha',
+                            age:-1
+                        }
+                    }
+                },
+                methods:{
+                    changeName(){
+                        this._data.person.son.name = 'old old sam'
+                    }
+                }
+            });
+        console.log('/*---------*/')
+        vm._data.person.son.name = 'old sam'
+
+
+        }
+
+    </script>
+</body>
+
+</html>

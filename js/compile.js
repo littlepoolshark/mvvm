@@ -123,9 +123,9 @@ var compileUtil = {
     bind: function(node, vm, exp, dir) {
         var updaterFn = updater[dir + 'Updater'];
 
-        updaterFn && updaterFn(node, this._getVMVal(vm, exp));
-
-        new Watcher(vm, exp, function(value, oldValue) {
+        // updaterFn && updaterFn(node, this._getVMVal(vm, exp));
+        updaterFn && updaterFn(node, this._getVMVal(vm._data, exp));
+        const watcher = new Watcher(vm, exp, function(value, oldValue) {
             updaterFn && updaterFn(node, value, oldValue);
         });
     },

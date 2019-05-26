@@ -41,9 +41,17 @@ Observer.prototype = {
             enumerable: true, // 可枚举
             configurable: false, // 不能再define
             get: function() {
+                console.log(`第${++visitCount}次冲击watcher的外交大门－－－－－－开始`)
                 if (Dep.target) {
-                    dep.depend(); // 【尝试给dep实例和watcher实例建立双向关联】
+                    console.log( 'watcher的外交大门打开了，冲击成功！')
+                    console.log(`${key}大臣走入watcher的议事大厅`)
+                    dep.depend();
+                }else {
+                    console.log('watcher的外交大门关了，冲击失败！')
+                    console.log(`${key}大臣被拒之门外`)
                 }
+                console.log(`第${visitCount}次冲击watcher的外交大门－－－－－－结束`)
+                console.log('\n')
                 return val;
             },
             set: function(newVal) {
@@ -71,7 +79,8 @@ function observe(value, vm) {
 
 var uid = 0;
 
-function Dep() {
+function Dep(name) {
+    this.name = name;
     this.id = uid++;
     this.subs = [];
 }
