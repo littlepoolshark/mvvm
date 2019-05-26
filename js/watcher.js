@@ -18,10 +18,12 @@ Watcher.prototype = {
         this.run();
     },
     run: function() {
-        var value = this.get();
-        var oldVal = this.value;
+        var value = this.get(); // 通过手动调用this.get()来获取该表达式最新的值
+        var oldVal = this.value; // 旧值保存在this.value当中
         if (value !== oldVal) {
             this.value = value;
+            // 这个cb是个关键人人物，它是实例化时候我们传递进来的函数。
+            // 这个函数就是我们的调用栈的“见底函数”－负责具体的DOM操作
             this.cb.call(this.vm, value, oldVal);
         }
     },
@@ -64,7 +66,8 @@ Watcher.prototype = {
         Dep.target = null;
         return value;
     },
-
+    // 在实例化的时候，就通过闭包，把“表达式”变量持久化在内存当中。
+    // 再在this.get()方法调用的时候，把watcher实例 ＝》 表达式 ＝》 依赖属性 ＝》 dep实例的关系链建立起来。
     parseGetter: function(exp) {
         if (/[^\w.$]/.test(exp)) return; 
 

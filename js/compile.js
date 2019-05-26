@@ -34,13 +34,17 @@ Compile.prototype = {
             var text = node.textContent;
             var reg = /\{\{(.*)\}\}/;
 
+            // 对一个标签从上到下，从外到里进行解析/编译
+            // 1) 先编译“指令属性”
             if (me.isElementNode(node)) {
                 me.compile(node);
-
+            
+            // 2)再编译“插值表达式”类型的文本子节点
             } else if (me.isTextNode(node) && reg.test(text)) {
                 me.compileText(node, RegExp.$1.trim());
             }
 
+            // 3) 最后递归编译元素子节点。
             if (node.childNodes && node.childNodes.length) {
                 me.compileElement(node);
             }
@@ -119,13 +123,15 @@ var compileUtil = {
     class: function(node, vm, exp) {
         this.bind(node, vm, exp, 'class');
     },
-
+    // bind函数可以看作是工厂模式的实现
     bind: function(node, vm, exp, dir) {
         var updaterFn = updater[dir + 'Updater'];
 
         // updaterFn && updaterFn(node, this._getVMVal(vm, exp));
         updaterFn && updaterFn(node, this._getVMVal(vm._data, exp));
         const watcher = new Watcher(vm, exp, function(value, oldValue) {
+            // 通过闭包来实现柯里化
+            // 第一次注入“node”参数，第二注入“value”和“oldValue”参数
             updaterFn && updaterFn(node, value, oldValue);
         });
     },

@@ -38,10 +38,11 @@
                     }
                 }
             });
+            vm.$watch('person.name',() => {
+            console.log('值变了');
+        })
         console.log('/*---------*/')
-        vm._data.person.son.name = 'old sam'
-
-
+        vm._data.person.son.name = 'old sam';
         }
 
     </script>

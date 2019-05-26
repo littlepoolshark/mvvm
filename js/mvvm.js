@@ -6,7 +6,7 @@ function MVVM(options) {
     // 第一步：数据代理
     // 实现 vm.xxx -> vm._data.xxx
     // 数据代理并不是mvvm的必要和核心特征，它只是一个便利之举而已。也就是说，有了它，我们不用写vm._data.xxx而是少些几个字符－ vm.xxx。
-    // mvvm的核心特征是数据绑定（通过数据劫持或者属性监听）来实现页面的自动更新。
+    // mvvm的核心特征是数据绑定（通过数据劫持，个人觉得，称之为属性劫持或者属性监听可能更准确）来实现页面的自动更新。
     // 不信？我们不妨试一试禁用数据代理情况下，数据绑定是否生效？
     // 1) 把mvvm.js的构造函数MVVM的数据代理代码注释掉
     // 2) 在自定义类型watcherde的get方法里面对this.getter的调用传参时，把第二个参数从“this.vm”替换为"this.vm._data"
@@ -28,10 +28,12 @@ function MVVM(options) {
 }
 
 MVVM.prototype = {
+    // 这个key就是我们模板里面的表达式
     $watch: function(key, cb, options) {
         new Watcher(this, key, cb);
     },
-
+    // 这个方法注意的一点是，它只对vm的第一层属性进行代理
+    // 它并没有像observer的内部实现中的defineReactive方法那样，通过间接递归来实现对象的所有层次的数据代理。
     _proxyData: function(key, setter, getter) {
         var me = this;
         setter = setter || 
