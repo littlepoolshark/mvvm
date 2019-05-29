@@ -52,7 +52,10 @@ Watcher.prototype = {
             // 那是因为就像我们在observer.js注释里面所说的那样，一个属性对应一个dep实例。同样，一个表达式也对应着一个watcher实例。
             // 那么，多个表达式就对应着多个watcher实例，也就是说多个watcher对应着同一个属性，而一个属性就对应着一个dep实例。
             // 综上所述，也就是说一个dep实例是有可能对应着多个watcher实例的。
+
+            // 将watcher添加到dep实例中去，用于界面更新阶段
             dep.addSub(this); 
+            // 将dep实例添加到watcher实例中去，用于防止重复建立关系
             this.depIds[dep.id] = dep;
             console.log('首次，成功建立外交关系')
         }else {
@@ -63,7 +66,7 @@ Watcher.prototype = {
         Dep.target = this; // 在这里watcher实例把自己的大门打开，欢迎dep实例与自己建立关系。
         var value = this.getter.call(this.vm, this.vm._data);
         // var value = this.getter.call(this.vm, this.vm);
-        Dep.target = null;
+        Dep.target = null;// 这里把当前watcher去掉。防止当前表达式错误地和上一次创建的watcher建立关系。
         return value;
     },
     // 在实例化的时候，就通过闭包，把“表达式”变量持久化在内存当中。

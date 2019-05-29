@@ -130,8 +130,10 @@ var compileUtil = {
         // updaterFn && updaterFn(node, this._getVMVal(vm, exp));
         updaterFn && updaterFn(node, this._getVMVal(vm._data, exp));
         const watcher = new Watcher(vm, exp, function(value, oldValue) {
+            
             // 通过闭包来实现柯里化
             // 第一次注入“node”参数，第二注入“value”和“oldValue”参数
+            // 当表达式中所依赖的属性的值发生改变时候，调用这个回调函数更新界面（更具体来说，是更新对应的element node）
             updaterFn && updaterFn(node, value, oldValue);
         });
     },

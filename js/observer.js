@@ -44,6 +44,7 @@ Observer.prototype = {
         // 因为每个属性都被注册了getter回调，所有我们综合一下，它们三者关系路径是这样的：
         // dep实例 =》 vm._data对象属性 =》 getter回调
 
+        // data本来就有key这个属性了，这里是重新定义。从某种程度上来说，呼应的“劫持”的语义。
         Object.defineProperty(data, key, {
             enumerable: true, // 可枚举
             configurable: false, // 不能再define
